@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeuroSonic — MS Lezyon Tespit & Sonifikasyon Sistemi</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 64 64" class="logo" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="lg" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#6366f1"/>
+      </linearGradient></defs>
+      <path d="M32 6c-13 0-22 9-22 22 0 8 4 14 9 17v8c0 2 1 3 3 3h20c2 0 3-1 3-3v-8c5-3 9-9 9-17 0-13-9-22-22-22z" fill="none" stroke="url(#lg)" stroke-width="3"/>
+      <circle cx="24" cy="28" r="3" fill="#ef4444"/>
+      <circle cx="40" cy="32" r="2" fill="#ef4444"/>
+      <circle cx="32" cy="40" r="2.5" fill="#ef4444"/>
+      <path d="M14 50 Q22 46 32 50 T50 50" stroke="#22d3ee" stroke-width="1.5" fill="none" opacity="0.6"/>
+    </svg>
+    <div class="brand-text">
+      <h1>NeuroSonic</h1>
+      <span>MS Lezyon Tespit & Sonifikasyon Sistemi</span>
+    </div>
+  </div>
+  <nav class="topnav">
+    <a href="#nasil-calisir">Nasıl Çalışır</a>
+    <a href="#hakkinda">Hakkında</a>
+    <span class="pill">v1.0 · Demo</span>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="hero-text">
+      <span class="badge">YAPAY ZEKA · GÖRÜNTÜ İŞLEME · SONİFİKASYON</span>
+      <h2>Lezyonları <span class="grad-text">görmenin</span> ötesinde, <span class="grad-text">duyun.</span></h2>
+      <p>FLAIR MR görüntülerinden Multipl Skleroz lezyonlarını otomatik tespit eden,
+         konum / büyüklük / morfoloji özelliklerini çıkaran ve her lezyonu eşsiz bir
+         frekansa dönüştürerek <strong>"beynin sesini"</strong> dinletmenize olanak
+         tanıyan hibrit AI tabanlı klinik karar destek sistemi.</p>
+      <div class="hero-stats">
+        <div><strong>%91.2</strong><small>Jaccard benzerlik (referans)</small></div>
+        <div><strong>FCM + AI</strong><small>Hibrit segmentasyon</small></div>
+        <div><strong>Web Audio</strong><small>Gerçek zamanlı sonifikasyon</small></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="brain-anim">
+        <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs><radialGradient id="bg2" cx="0.5" cy="0.5">
+            <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0"/>
+          </radialGradient></defs>
+          <circle cx="100" cy="100" r="80" fill="url(#bg2)"/>
+          <path d="M50 100 Q60 60 100 60 Q140 60 150 100 Q140 140 100 140 Q60 140 50 100 Z"
+                fill="none" stroke="#22d3ee" stroke-width="2" opacity="0.6"/>
+          <circle cx="80" cy="85" r="4" fill="#ef4444" class="pulse"/>
+          <circle cx="120" cy="95" r="5" fill="#ef4444" class="pulse" style="animation-delay:0.4s"/>
+          <circle cx="100" cy="115" r="3" fill="#ef4444" class="pulse" style="animation-delay:0.8s"/>
+          <circle cx="115" cy="75" r="3" fill="#ef4444" class="pulse" style="animation-delay:1.2s"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="card analyze-card">
+    <h3>1 · Bir Klinik Senaryo Seçin</h3>
+    <p style="color:var(--txt-1); margin-bottom:18px;">
+      Bu canlı demo 4 ön-hazırlanmış MR senaryosu içerir. Her senaryo, yerel Python motoruyla
+      önceden işlenmiş ve sonuçlar JSON olarak gömülmüştür. Kendi MR görüntünüzle çalıştırmak
+      isterseniz <a href="https://github.com/" target="_blank" id="repoLink">GitHub repo</a>'sundaki
+      Python sürümünü kendi makinenizde çalıştırabilirsiniz.
+    </p>
+    <div class="upload-row" style="grid-template-columns:1fr">
+      <div class="samples">
+        <div class="sample-grid" id="sampleGrid" style="grid-template-columns:repeat(4,1fr)"></div>
+      </div>
+    </div>
+    <div class="action-bar">
+      <button id="analyzeBtn" class="btn-primary" disabled>
+        <span class="btn-spin"></span><span class="btn-text">Görüntü seçin</span>
+      </button>
+      <span class="hint">Sonuçlar anında gösterilir (önceden hesaplanmış).</span>
+    </div>
+  </section>
+
+  <section id="results" class="results-section" style="display:none">
+    <div class="score-grid">
+      <div class="score-card" id="diagCard">
+        <div class="score-icon">⚠</div><small>Tanı Değerlendirmesi</small>
+        <h4 id="diagVerdict">—</h4>
+        <div class="probability">
+          <div class="prob-track"><div class="prob-fill" id="probFill"></div></div>
+          <span id="probValue">%0</span>
+        </div>
+        <small>MS olasılığı (RandomForest + McDonald kriterleri)</small>
+      </div>
+      <div class="score-card">
+        <div class="score-icon">⊕</div><small>Tespit Edilen Lezyon</small>
+        <h4 id="lesionCount">0</h4><small id="lesionTotalArea">Toplam yük: 0 mm²</small>
+      </div>
+      <div class="score-card">
+        <div class="score-icon">≈</div><small>Jaccard İç-Tutarlılık</small>
+        <h4 id="jaccardValue">—</h4><small>Algoritmanın güvenirlik göstergesi</small>
+      </div>
+      <div class="score-card">
+        <div class="score-icon">♪</div><small>Sonifikasyon</small>
+        <h4 id="soundVoices">0 ses</h4><small id="soundTempo">— BPM</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>2 · Görüntü Bölütleme Sonuçları</h3>
+      <div class="image-grid">
+        <figure><img id="imgOriginal" alt=""><figcaption>Orijinal FLAIR MR</figcaption></figure>
+        <figure><img id="imgEnhanced" alt=""><figcaption>Ön İşleme + Kafatası Ayırma</figcaption></figure>
+        <figure><img id="imgMask" alt=""><figcaption>Beyin Maskesi</figcaption></figure>
+        <figure class="figure-highlight"><img id="imgSegment" alt=""><figcaption>Lezyon Tespiti (Kırmızı Overlay)</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="dual-grid">
+      <div class="card">
+        <h3>3 · McDonald 2017 Kriter Analizi</h3>
+        <ul class="criteria-list" id="criteriaList"></ul>
+        <div class="criteria-summary"><span id="criteriaCount">0/0</span> kriter karşılandı</div>
+        <small class="disclaimer">⓲ Bu çıktı tıbbi tanı yerine geçmez; klinik karar bir nöroloji uzmanı tarafından verilmelidir.</small>
+      </div>
+      <div class="card">
+        <h3>4 · AI Modelinin Bu Hasta İçin En Önemli Bulduğu Özellikler</h3>
+        <div id="featureList"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>5 · Lezyon Detay Tablosu</h3>
+      <div class="table-wrap">
+        <table class="lesion-table">
+          <thead><tr><th>#</th><th>Anatomik Bölge</th><th>Alan (mm²)</th><th>Çevre</th>
+            <th>Eksantrisite</th><th>Yoğunluk</th><th>Frekans (Hz)</th></tr></thead>
+          <tbody id="lesionTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card sonification-card">
+      <h3>6 · Lezyon Sonifikasyon — Beyninizi Dinleyin</h3>
+      <p class="narrative" id="soundNarrative"></p>
+      <div class="sonification-controls">
+        <button id="playBtn" class="btn-glow">▶ Çal</button>
+        <button id="stopBtn" class="btn-secondary">■ Durdur</button>
+        <button id="downloadBtn" class="btn-secondary">⬇ WAV İndir</button>
+        <label class="vol-label"><span>Ses</span>
+          <input type="range" id="volSlider" min="0" max="100" value="60">
+        </label>
+      </div>
+      <div class="sound-canvas-wrap"><canvas id="soundCanvas" height="180"></canvas></div>
+      <div class="voice-cloud" id="voiceCloud"></div>
+      <details class="howto">
+        <summary>Ses haritalaması nasıl yapılır?</summary>
+        <div class="howto-grid">
+          <div><strong>Y konumu</strong><span>→ Frekans (alt = bass, üst = trebles)</span></div>
+          <div><strong>X konumu</strong><span>→ Stereo pan (sol – sağ)</span></div>
+          <div><strong>Lezyon alanı</strong><span>→ Amplitüd & nota uzunluğu</span></div>
+          <div><strong>Yoğunluk</strong><span>→ Düşük geçiren filtre kesim noktası</span></div>
+          <div><strong>Eksantrisite</strong><span>→ Vibrato derinliği</span></div>
+          <div><strong>Bölge</strong><span>→ Dalga formu (sine/tri/saw/square)</span></div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section id="nasil-calisir" class="card howto-section">
+    <h3>Nasıl Çalışır?</h3>
+    <ol class="pipeline">
+      <li><strong>Ön İşleme</strong> — Medyan filtre + keskinleştirme ile gürültü temizlenir.</li>
+      <li><strong>Kafatası Ayırma</strong> — Otsu eşikleme + morfolojik işlemlerle yalnız beyin bırakılır.</li>
+      <li><strong>FCM Bölütleme</strong> — Bulanık-C Ortalamaları algoritması 5 yoğunluk kümesi öğrenir.</li>
+      <li><strong>Adaptif Hiperintensite Eşiği</strong> — WM tepe noktası + 0.18 ile lezyon adayları seçilir.</li>
+      <li><strong>Morfolojik Temizleme</strong> — Açma + küçük nesne filtresi kalıntıları yok eder.</li>
+      <li><strong>Özellik Çıkarımı</strong> — Her lezyonun konumu, alanı, çevresi, eksantrisitesi hesaplanır.</li>
+      <li><strong>AI Sınıflandırma</strong> — RandomForest + McDonald 2017 kriterleri ile MS olasılığı.</li>
+      <li><strong>Sonifikasyon</strong> — Lezyon özellikleri Web Audio API ile gerçek zamanlı sese dönüşür.</li>
+    </ol>
+  </section>
+
+  <section id="hakkinda" class="card about-section">
+    <h3>Hakkında</h3>
+    <p>NeuroSonic; Ekşi vd. (2015) tarafından önerilen FCM tabanlı MS lezyon tespit yöntemini
+       (Jaccard %91.2 başarı oranı) genişleten, üzerine derin öğrenme katmanı ve klinik
+       sonifikasyon arayüzü ekleyen bütünleşik bir sistemdir.</p>
+    <p><strong>Kullanılan teknolojiler:</strong> Python, Flask, NumPy, OpenCV, scikit-image,
+       scikit-learn, Web Audio API.</p>
+    <p class="warn">⓲ Bu yazılım yalnızca eğitim ve araştırma amaçlıdır. Klinik tanı için kullanılmaz.</p>
+  </section>
+
+</main>
+
+<footer>
+  <span>© 2026 NeuroSonic · Bilgisayar Mühendisliği Fikir Yarışması</span>
+  <span class="ref">Referans: Z. Ekşi vd., "MR Görüntüleri Üzerinde MS Lezyonlarının Bilgisayar Destekli Otomatik Tespiti", IEEE 2015</span>
+</footer>
+
+<script src="sound.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
